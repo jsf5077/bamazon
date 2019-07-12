@@ -39,9 +39,16 @@ INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ("All-new Spindle Oracle", "Computers & Accessories", 249.99, 350);
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
-VALUES ("Parrot Feather – Bring LIRI to your own speaker- Black", "Smart Home", 34.99, 1000);
+VALUES ("Bamazon Parrot Feather – Bring LIRI to your own speaker- Black", "Smart Home", 34.99, 1000);
 
+UPDATE products 
+SET 
+    product_name = 'Bamazon Parrot Feather – Bring LIRI to your own speaker- Black'
+WHERE
+    item_id = 10;
+    
 SELECT * FROM products;
+
 
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Runner6998!';
 	
