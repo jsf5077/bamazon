@@ -30,10 +30,10 @@ INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ("BamazonRoots AA 1.5 Volt Performance Alkaline Batteries - Pack of 48, Packaging May Vary", "Electronics", 13.99, 500);
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
-VALUES ("BamazonRoots AmazonBasics 12-Piece Colored Kitchen Knife Set", "Home & Kitchen", 15.99, 200);
+VALUES ("BamazonRoots 12-Piece Colored Kitchen Knife Set", "Home & Kitchen", 15.99, 200);
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
-VALUES ("Bamazon Ding Wi-Fi enabled Videp Doorbell, Works with LIRI", "Home & Security", 99.99, 200);
+VALUES ("Bamazon Ding Wi-Fi enabled Video Doorbell, Works with LIRI", "Home & Security", 99.99, 200);
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ("All-new Spindle Oracle", "Computers & Accessories", 249.99, 350);
