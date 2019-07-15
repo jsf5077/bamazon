@@ -12,9 +12,6 @@ function Password (password) {
 
 var pw = new Password(keys.password);
 
-var listSize = 0;
-var itemQty = 0;
-
 var connection = mysql.createConnection({
     host: "localhost",
 
@@ -51,7 +48,7 @@ connection.connect(function(err) {
     console.log("");
 
     var compileList;
-    var number = 4;
+    var number = 3;
 
     
     
@@ -83,33 +80,119 @@ function start() {
             console.log(res[i].item_id + " | " + res[i].product_name + " | Dept: " + res[i].department_name + " | Price: $" + res[i].price + " | QTY: " + res[i].stock_quantity);
             console.log("-----------------------------------");
         }
-
-        inquirer
-      .prompt([{
-                name: "whichItem",
-                type: "input",
-                message: "What is the id number of the item you would like to purchase?"
-            }, {
-                name:"howMany",
-                type: "input",
-                message: "Please enter the quantity that you would like to purchase."
-            }
-        ])
-        .then(function(answer) {
-            for (var i = 0; i > res.length; i++) {
-                if (answer.whichItem === res[i].item_id) {
-                    console.log ("You have chosen "+res[i].product_name);
-                    if (answer.howMany > res[i].stock_quantity) {
-                        console.log ("insufficient quantity!")
-                        start();
-                    }
-                    console.log("Thank you for your purchase! Your total comes to $"+(answer.howMany * res[i].price));
-                    connection.end();
+        function pickItem () {
+                inquirer
+        .prompt([{
+                    name: "whichItem",
+                    type: "input",
+                    message: "What is the item number of the product you would like to purchase?"
+                }, {
+                    name:"howMany",
+                    type: "input",
+                    message: "Please enter the quantity that you would like to purchase."
                 }
-            }
+            ])
+            .then(function(answer) {
 
-            
-        
-        });
+                var item = answer.whichItem;
+                var qty = answer.howMany;
+                if (Number.isInteger(+qty)) {
+                    if (item <= res.length) {
+                        console.log(" ");
+                        console.log ("You have chosen "+res[item].product_name + " and would like to order a quantity of " + qty);
+                        if (qty > res[item].stock_quantity) {
+                            console.log(" ");
+                            console.log("We're sorry, but we are unable to complete your transaction")
+                            console.log("The requested quantity is more than what is available in inventory")
+                            console.log("");
+                            userPrompt();
+                        } else
+                        inquirer
+                        .prompt({
+                            name: "confirmOrder",
+                            type: "list",
+                            message: "Please confirm purchase.",
+                            choices: ["YES", "NO"]
+                        }).then(function(choice) {
+                            switch(choice.confirmOrder) {
+                                case "YES":
+                                console.log(" ");
+                                console.log("purchased confirmed");
+                                console.log("");
+                                afterPurchase ()
+                                
+                                break;
+
+                                case "NO":
+                                    console.log(" ");
+                                    console.log("purchased cancelled");
+                                    console.log("");
+                                    userPrompt();
+
+                                break;
+                            }
+                            
+                        })
+                    } else {
+                        console.log(" ");
+                        console.log("Sorry. We were unable to locate the item listing you were looking for.");
+                        console.log(" ");
+                        userPrompt();
+                    }
+                } else {
+                    console.log(" ");
+                    console.log("We're sorry, but we are unable to recognize the quantity you'd like to order.")
+                    console.log("Please be sure that you've entered a number.")
+                    console.log(" ");
+                    userPrompt(); 
+                }         
+            });
+        }
+        pickItem();
+
+        function userPrompt () {
+            inquirer
+            .prompt({
+                name: "prompt",
+                type: "list",
+                message: "What would you like to do?",
+                choices: ["Choose a different item / change quantity", "Exit"]
+            }).then(function(choice) {
+                switch(choice.prompt) {
+                    case "Choose a different item / change quantity":
+                        pickItem();
+                      break;
+                    case "Exit":
+                        console.log(" ");
+                        console.log("Thank you for visiting BAMAZON! We look forward to your next visit!");
+                        connection.end();
+                      break;
+                  }
+                
+            });
+        };
+
+        function afterPurchase () {
+            inquirer
+            .prompt({
+                name: "prompt",
+                type: "list",
+                message: "What would you like to do?",
+                choices: ["Purchase another item", "Exit"]
+            }).then(function(choice) {
+                switch(choice.prompt) {
+                    case "Purchase another item":
+                        start();
+                      break;
+                    case "Exit":
+                        console.log(" ");
+                        console.log("Thank you for visiting BAMAZON! We look forward to your next visit!");
+                        connection.end();
+                      break;
+                  }
+                
+            });
+        };
     });
+    
 }
