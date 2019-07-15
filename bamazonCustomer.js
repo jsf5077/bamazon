@@ -95,10 +95,40 @@ function start() {
             .then(function(answer) {
 
                 var item = answer.whichItem - 1;
-                var qty = answer.howMany;
-                var newQty = res[item].stock_quantity - qty;
-                // console.log(newQty);
+                var invItem = item + 1;
+
+                function userPrompt () {
+                    inquirer
+                    .prompt({
+                        name: "prompt",
+                        type: "list",
+                        message: "What would you like to do?",
+                        choices: ["Choose a different item / change quantity", "Exit"]
+                    }).then(function(choice) {
+                        switch(choice.prompt) {
+                            case "Choose a different item / change quantity":
+                                pickItem();
+                                break;
+                            case "Exit":
+                                console.log(" ");
+                                console.log("Thank you for choosing Bamazon! We look forward to your next visit!");
+                                connection.end();
+                                break;
+                            }
+                        });
+                    };
+
+                if (!item || invItem > res.length || invItem <= 0) {
+                    console.log(" ");
+                    console.log("We're sorry, but we are unable to recognize the item you've selected.")
+                    console.log("Please be sure that you've entered the number that matches your item selection.")
+                    console.log(" ");
+                    userPrompt(); 
+
+                } else {
+                    var qty = answer.howMany;
                 if (Number.isInteger(+qty)) {
+                    var newQty = res[item].stock_quantity - qty;
                     if (item <= res.length) {
                         console.log(" ");
                         console.log ("You have chosen "+res[item].product_name + " and would like to order a quantity of " + qty);
@@ -124,9 +154,18 @@ function start() {
                         }).then(function(choice) {
                             switch(choice.confirmOrder) {
                                 case "YES":
-                                console.log(" ");
+                                console.log("");
                                 console.log("purchased confirmed");
                                 console.log("");
+                                console.log("ORDER CONFIRMATION #: " + connection.threadId + "BAM" + subTotal + "JSF" + item + "uPENN");
+                                console.log("");
+                                console.log("Your order will arrive in 3-5 business days.");
+                                console.log("");
+                                console.log("Bamazon Primus Members get free Two-Day Shipping on over 100 million items.");
+                                console.log("Sign up for a membership today and get your deliveries sooner along with other countless");
+                                console.log("Bamazon Primus Membership Benefits including Primus Video and Primus Music!");
+                                console.log("");
+
                                 
                                 updateProduct();
                                 afterPurchase();
@@ -157,7 +196,6 @@ function start() {
                     userPrompt(); 
                 } 
                 function updateProduct() {
-                    var invItem = item + 1;
                     connection.query( "UPDATE products SET stock_quantity=? WHERE item_id=?",
                     [newQty, invItem],
                     function(err) {
@@ -166,27 +204,26 @@ function start() {
                     );
                   }
                   
-                  function userPrompt () {
-                    inquirer
-                    .prompt({
-                        name: "prompt",
-                        type: "list",
-                        message: "What would you like to do?",
-                        choices: ["Choose a different item / change quantity", "Exit"]
-                    }).then(function(choice) {
-                        switch(choice.prompt) {
-                            case "Choose a different item / change quantity":
-                                pickItem();
-                              break;
-                            case "Exit":
-                                console.log(" ");
-                                console.log("Thank you for choosing BAMAZON! We look forward to your next visit!");
-                                connection.end();
-                              break;
-                          }
-                        
-                    });
-                };
+                // function userPrompt () {
+                // inquirer
+                // .prompt({
+                //     name: "prompt",
+                //     type: "list",
+                //     message: "What would you like to do?",
+                //     choices: ["Choose a different item / change quantity", "Exit"]
+                // }).then(function(choice) {
+                //     switch(choice.prompt) {
+                //         case "Choose a different item / change quantity":
+                //             pickItem();
+                //             break;
+                //         case "Exit":
+                //             console.log(" ");
+                //             console.log("Thank you for choosing Bamazon! We look forward to your next visit!");
+                //             connection.end();
+                //             break;
+                //         }
+                //     });
+                // };
         
                 function afterPurchase () {
 
@@ -203,13 +240,15 @@ function start() {
                               break;
                             case "Exit":
                                 console.log(" ");
-                                console.log("Thank you for choosing BAMAZON! We look forward to your next visit!");
+                                console.log("Thank you for choosing Bamazon! We look forward to your next visit!");
                                 connection.end();
                               break;
                           }
                         
                     });
-                };     
+                };  
+                }
+                   
             });
         }
         pickItem();     
