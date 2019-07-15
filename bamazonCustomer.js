@@ -94,8 +94,10 @@ function start() {
             ])
             .then(function(answer) {
 
-                var item = answer.whichItem;
+                var item = answer.whichItem - 1;
                 var qty = answer.howMany;
+                var newQty = res[item].stock_quantity - qty;
+                // console.log(newQty);
                 if (Number.isInteger(+qty)) {
                     if (item <= res.length) {
                         console.log(" ");
@@ -107,6 +109,12 @@ function start() {
                             console.log("");
                             userPrompt();
                         } else
+                        var subTotal = res[item].price * qty;
+                        var tax = subTotal * 0.06;
+                        var total = subTotal + tax;
+                        console.log( "Subtotal: $" + subTotal)
+                        console.log( "Tax (6%): $" + tax)
+                        console.log( "Your total: $" + total)
                         inquirer
                         .prompt({
                             name: "confirmOrder",
@@ -119,7 +127,9 @@ function start() {
                                 console.log(" ");
                                 console.log("purchased confirmed");
                                 console.log("");
-                                afterPurchase ()
+                                
+                                updateProduct();
+                                afterPurchase();
                                 
                                 break;
 
@@ -145,54 +155,64 @@ function start() {
                     console.log("Please be sure that you've entered a number.")
                     console.log(" ");
                     userPrompt(); 
-                }         
+                } 
+                function updateProduct() {
+                    var invItem = item + 1;
+                    connection.query( "UPDATE products SET stock_quantity=? WHERE item_id=?",
+                    [newQty, invItem],
+                    function(err) {
+                        if (err) throw err;
+                      }
+                    );
+                  }
+                  
+                  function userPrompt () {
+                    inquirer
+                    .prompt({
+                        name: "prompt",
+                        type: "list",
+                        message: "What would you like to do?",
+                        choices: ["Choose a different item / change quantity", "Exit"]
+                    }).then(function(choice) {
+                        switch(choice.prompt) {
+                            case "Choose a different item / change quantity":
+                                pickItem();
+                              break;
+                            case "Exit":
+                                console.log(" ");
+                                console.log("Thank you for choosing BAMAZON! We look forward to your next visit!");
+                                connection.end();
+                              break;
+                          }
+                        
+                    });
+                };
+        
+                function afterPurchase () {
+
+                    inquirer
+                    .prompt({
+                        name: "prompt",
+                        type: "list",
+                        message: "What would you like to do?",
+                        choices: ["Purchase another item", "Exit"]
+                    }).then(function(choice) {
+                        switch(choice.prompt) {
+                            case "Purchase another item":
+                                start();
+                              break;
+                            case "Exit":
+                                console.log(" ");
+                                console.log("Thank you for choosing BAMAZON! We look forward to your next visit!");
+                                connection.end();
+                              break;
+                          }
+                        
+                    });
+                };     
             });
         }
-        pickItem();
-
-        function userPrompt () {
-            inquirer
-            .prompt({
-                name: "prompt",
-                type: "list",
-                message: "What would you like to do?",
-                choices: ["Choose a different item / change quantity", "Exit"]
-            }).then(function(choice) {
-                switch(choice.prompt) {
-                    case "Choose a different item / change quantity":
-                        pickItem();
-                      break;
-                    case "Exit":
-                        console.log(" ");
-                        console.log("Thank you for visiting BAMAZON! We look forward to your next visit!");
-                        connection.end();
-                      break;
-                  }
-                
-            });
-        };
-
-        function afterPurchase () {
-            inquirer
-            .prompt({
-                name: "prompt",
-                type: "list",
-                message: "What would you like to do?",
-                choices: ["Purchase another item", "Exit"]
-            }).then(function(choice) {
-                switch(choice.prompt) {
-                    case "Purchase another item":
-                        start();
-                      break;
-                    case "Exit":
-                        console.log(" ");
-                        console.log("Thank you for visiting BAMAZON! We look forward to your next visit!");
-                        connection.end();
-                      break;
-                  }
-                
-            });
-        };
+        pickItem();     
     });
     
 }
