@@ -43,9 +43,16 @@ USE bamazon_DB;
 
 -- UPDATE products 
 -- SET 
---     product_name = 'Bamazon Ding Wi-Fi enabled Video Doorbell, Works with LIRI'
+--     item_id = 5
 -- WHERE
---     item_id = 8;
+--     product_name = 'Bamazon Spindle, Works with LIRI';
+
+-- DELETE FROM products 
+
+-- WHERE
+--     item_id = 5;
+
+--     Bamazon Spindle, Works with LIRI
     
 SELECT * FROM products;
 

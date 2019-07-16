@@ -48,7 +48,7 @@ connection.connect(function(err) {
     console.log("");
 
     var compileList;
-    var number = 3;
+    var number = 2;
 
     
     
@@ -77,8 +77,9 @@ function start() {
     connection.query("SELECT * FROM products", function(err, res) {
         if (err) throw err;
         for (var i = 0; i < res.length; i++) {
-            console.log(res[i].item_id + " | " + res[i].product_name + " | Dept: " + res[i].department_name + " | Price: $" + res[i].price + " | QTY: " + res[i].stock_quantity);
-            console.log("-----------------------------------");
+            console.log(" || " + (i + 1) + " || " + res[i].product_name + " || Dept: " + res[i].department_name + " || Price: $" + res[i].price + " || QTY: " + res[i].stock_quantity);
+            console.log("------------------------------------------------------------------------------------------------------------------------");
+            console.log("------------------------------------------------------------------------------------------------------------------------");
         }
         function pickItem () {
                 inquirer
@@ -129,6 +130,7 @@ function start() {
                     var qty = answer.howMany;
                 if (Number.isInteger(+qty)) {
                     var newQty = res[item].stock_quantity - qty;
+                    var purchasedItemID = res[item].item_id;
                     if (item <= res.length) {
                         console.log(" ");
                         console.log ("You have chosen "+res[item].product_name + " and would like to order a quantity of " + qty);
@@ -167,7 +169,7 @@ function start() {
                                 console.log("");
 
                                 
-                                updateProduct();
+                                updateProduct(newQty, purchasedItemID);
                                 afterPurchase();
                                 
                                 break;
@@ -195,7 +197,7 @@ function start() {
                     console.log(" ");
                     userPrompt(); 
                 } 
-                function updateProduct() {
+                function updateProduct(newQty, invItem) {
                     connection.query( "UPDATE products SET stock_quantity=? WHERE item_id=?",
                     [newQty, invItem],
                     function(err) {
@@ -203,27 +205,6 @@ function start() {
                       }
                     );
                   }
-                  
-                // function userPrompt () {
-                // inquirer
-                // .prompt({
-                //     name: "prompt",
-                //     type: "list",
-                //     message: "What would you like to do?",
-                //     choices: ["Choose a different item / change quantity", "Exit"]
-                // }).then(function(choice) {
-                //     switch(choice.prompt) {
-                //         case "Choose a different item / change quantity":
-                //             pickItem();
-                //             break;
-                //         case "Exit":
-                //             console.log(" ");
-                //             console.log("Thank you for choosing Bamazon! We look forward to your next visit!");
-                //             connection.end();
-                //             break;
-                //         }
-                //     });
-                // };
         
                 function afterPurchase () {
 
