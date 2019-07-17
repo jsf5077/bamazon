@@ -80,7 +80,7 @@ function start() {
     };
     userPrompt ();
     function viewSales() {
-        var query = "SELECT department_id, departments.department_name, over_head_costs AS Over_Head_Costs , SUM(product_sales) AS Product_Sales FROM departments RIGHT JOIN products ON departments.department_name = products.department_name GROUP BY department_id, department_name;"
+        var query = "SELECT department_id, departments.department_name, over_head_costs AS Over_Head_Costs , SUM(product_sales) AS Product_Sales FROM departments LEFT JOIN products ON departments.department_name = products.department_name GROUP BY department_id, department_name;"
         connection.query( query, function(err, res) {
             if (err) throw err;
             var deptArr = []
