@@ -95,6 +95,8 @@ function start() {
                 deptArr.push(deptObj);
             }
             console.table(deptArr);
+            console.log("");
+            userPrompt ();
         });
     }
 }

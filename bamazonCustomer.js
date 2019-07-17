@@ -168,18 +168,7 @@ function start() {
                         }).then(function(choice) {
                             switch(choice.confirmOrder) {
                                 case "YES":
-                                console.log("");
-                                console.log("purchased confirmed");
-                                console.log("");
-                                console.log("ORDER CONFIRMATION #: " + connection.threadId + "BAM" + subTotal + "JSF" + item + "uPENN");
-                                console.log("");
-                                console.log("Your order will arrive in 3-5 business days.");
-                                console.log("");
-                                console.log("Bamazon Primus Members get free Two-Day Shipping on over 100 million items.");
-                                console.log("Sign up for a membership today and get your deliveries sooner along with other countless");
-                                console.log("Bamazon Primus Membership Benefits including Primus Video and Primus Music!");
-                                console.log("");
-
+                                console.log("\npurchased confirmed\n\nORDER CONFIRMATION #: " + connection.threadId + "BAM" + subTotal + "JSF" + item + "uPENN\nYour order will arrive in 3-5 business days.\nBamazon Primus Members get free Two-Day Shipping on over 100 million items.\nSign up for a membership today and get your deliveries sooner along with other countless\nBamazon Primus Membership Benefits including Primus Video and Primus Music!\n");
                                 
                                 updateProduct(newQty, purchasedItemID, subTotal);
                                 afterPurchase();
