@@ -257,8 +257,8 @@ function start() {
                         switch(choice.confirmOrder) {
                             case "YES":
                                 connection.query(
-                                    "INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES (?, ?, ?, ?);",
-                                    [newProduct, prodDept, prodPrice, prodStock],
+                                    "INSERT INTO products (product_name, department_name, price, stock_quantity, product_sales) VALUES (?, ?, ?, ?, ?);",
+                                    [newProduct, prodDept, prodPrice, prodStock, 0],
                                     function(err) {
                                         if (err) throw err;
                                     }

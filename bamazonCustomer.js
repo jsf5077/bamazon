@@ -180,15 +180,13 @@ function start() {
                                 console.log("");
 
                                 
-                                updateProduct(newQty, purchasedItemID);
+                                updateProduct(newQty, purchasedItemID, subTotal);
                                 afterPurchase();
                                 
                                 break;
 
                                 case "NO":
-                                    console.log(" ");
-                                    console.log("purchased cancelled");
-                                    console.log("");
+                                    console.log("\npurchased cancelled\n");
                                     userPrompt();
 
                                 break;
@@ -196,21 +194,22 @@ function start() {
                             
                         })
                     } else {
-                        console.log(" ");
-                        console.log("Sorry. We were unable to locate the item listing you were looking for.");
-                        console.log(" ");
+                        console.log("\nSorry. We were unable to locate the item listing you were looking for.\n");
                         userPrompt();
                     }
                 } else {
-                    console.log(" ");
-                    console.log("We're sorry, but we are unable to recognize the quantity you'd like to order.")
-                    console.log("Please be sure that you've entered a number.")
-                    console.log(" ");
+                    console.log("\nWe're sorry, but we are unable to recognize the quantity you'd like to order.\nPlease be sure that you've entered a number.\n")
                     userPrompt(); 
                 } 
-                function updateProduct(newQty, invItem) {
+                function updateProduct(newQty, invItem, subTotal) {
                     connection.query( "UPDATE products SET stock_quantity=? WHERE item_id=?",
                     [newQty, invItem],
+                    function(err) {
+                        if (err) throw err;
+                      }
+                    );
+                    connection.query( "UPDATE products SET product_sales=? WHERE item_id=?",
+                    [subTotal, invItem],
                     function(err) {
                         if (err) throw err;
                       }
@@ -231,8 +230,7 @@ function start() {
                                 start();
                               break;
                             case "Exit":
-                                console.log(" ");
-                                console.log("Thank you for choosing Bamazon! We look forward to your next visit!");
+                                console.log("\nThank you for choosing Bamazon! We look forward to your next visit!");
                                 connection.end();
                               break;
                           }
