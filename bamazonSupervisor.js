@@ -80,7 +80,7 @@ function start() {
     };
     userPrompt ();
     function viewSales() {
-        var query = "SELECT department_id, departments.department_name, over_head_costs AS Over_Head_Costs , SUM(product_sales) AS Product_Sales FROM departments RIGHT JOIN products ON departments.department_name = products.department_name GROUP BY department_id, departments.department_name;"
+        var query = "SELECT department_id, departments.department_name, over_head_costs AS Over_Head_Costs , SUM(product_sales) AS Product_Sales FROM departments RIGHT JOIN products ON departments.department_name = products.department_name GROUP BY department_id, department_name;"
         connection.query( query, function(err, res) {
             if (err) throw err;
             var deptArr = []
@@ -97,6 +97,59 @@ function start() {
             console.table(deptArr);
             console.log("");
             userPrompt ();
+        });
+    }
+    function createNew () {
+        inquirer
+            .prompt([{
+                name: "newDept",
+                type: "input",
+                message: "Please enter the name of the new department: "
+            },{
+                name: "initOHCost",
+                type: "input",
+                message: "Please set initial over head cost",
+            }
+        ])
+        .then(function(answer) {
+            var name = answer.newDept;
+            var cost = answer.initOHCost;
+
+            if (isNaN(cost)) {
+                console.log("\nINVALID INPUT\nPlease be sure that you've entered the number for initial over head cost.\n")
+            }
+            console.log ("\nYou have chosen "+name + " and would like to set the initial over head cost to " + cost + "\n");
+
+            inquirer
+            .prompt({
+                name: "confirmOrder",
+                type: "list",
+                message: "Please confirm transaction.",
+                choices: ["YES", "NO"]
+            }).then(function(choice) {
+                switch(choice.confirmOrder) {
+                    case "YES":
+                    updateProduct(name, cost);
+                    console.log("\nNew Department Added\n")                         
+                    userPrompt();
+                        break;
+
+                    case "NO":
+                        console.log("\ntransaction cancelled\n");
+                        userPrompt();
+                        break;
+                }
+                function updateProduct(name, cost) {
+                    connection.query( "INSERT INTO departments (department_name, over_head_costs) VALUES (?, ?)",
+                        [name, cost],
+                        function(err) {
+                            if (err) throw err;
+                        }
+                    );
+                }
+                
+            });
+
         });
     }
 }
