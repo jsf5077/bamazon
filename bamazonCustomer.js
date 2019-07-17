@@ -130,7 +130,7 @@ function start() {
                         });
                     };
 
-                if (!item || invItem > res.length || invItem <= 0) {
+                if (isNaN(item) || invItem > res.length || invItem <= 0) {
                     console.log(" ");
                     console.log("We're sorry, but we are unable to recognize the item you've selected.")
                     console.log("Please be sure that you've entered the number that matches your item selection.")
@@ -153,8 +153,9 @@ function start() {
                             userPrompt();
                         } else
                         var subTotal = res[item].price * qty;
-                        var tax = subTotal * 0.06;
-                        var total = subTotal + tax;
+                        var n = subTotal * 0.06;
+                        var tax = n.toFixed(2)
+                        var total = subTotal + parseFloat(tax);
                         console.log( "Subtotal: $" + subTotal)
                         console.log( "Tax (6%): $" + tax)
                         console.log( "Your total: $" + total)

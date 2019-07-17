@@ -30,7 +30,7 @@ var connection = mysql.createConnection({
 
 connection.connect(function(err) {
     if (err) throw err;
-    console.log("Welcome Bamazon Manager #" + connection.threadId);
+    console.log("Welcome Bamazon Supervisor #" + connection.threadId);
 
     var compileList;
     var number = 2;
@@ -62,20 +62,14 @@ function start() {
             name: "prompt",
             type: "list",
             message: "What would you like to do?",
-            choices: ["View Products for Sale", "View Low Inventory", "Change Inventory", "Add New Product", "EXIT"]
+            choices: ["View Product Sales by Department", "Create New Department", "EXIT"]
         }).then(function(choice) {
             switch(choice.prompt) {
-                case "View Products for Sale":
-                    viewItems()
+                case "View Product Sales by Department":
+                    viewSales()
                     break;
-                case "View Low Inventory":
-                    viewLowInv()
-                    break;
-                case "Change Inventory":
-                    addInv();
-                    break;
-                case "Add New Product":
-                    addProduct();
+                case "Create New Department":
+                    createNew()
                     break;
                 case "EXIT":
                     console.log("\nConnection Terminated! Enjoy the rest of your day!");
@@ -85,4 +79,22 @@ function start() {
         });
     };
     userPrompt ();
+    function viewSales() {
+        var query = "SELECT department_id, departments.department_name, over_head_costs AS Over_Head_Costs , SUM(product_sales) AS Product_Sales FROM departments RIGHT JOIN products ON departments.department_name = products.department_name GROUP BY department_id, departments.department_name;"
+        connection.query( query, function(err, res) {
+            if (err) throw err;
+            var deptArr = []
+            for (var i = 0; i < res.length; i++) {
+                var deptObj = {
+                    "item #": i + 1,
+                    "Department": res[i].department_name,
+                    "Over Head Costs": res[i].Over_Head_Costs,
+                    "Product Sales": res[i].Product_Sales,
+                    "Total Profit": parseFloat(res[i].Product_Sales) - parseFloat(res[i].Over_Head_Costs)
+                };
+                deptArr.push(deptObj);
+            }
+            console.table(deptArr);
+        });
+    }
 }
