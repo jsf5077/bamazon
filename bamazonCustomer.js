@@ -6,6 +6,8 @@ var keys = require("./keys.js");
 
 var inquirer = require("inquirer");
 
+const cTable = require('console.table')
+
 function Password (password) {
     this.password = password;
 }
@@ -76,11 +78,20 @@ connection.connect(function(err) {
 function start() {
     connection.query("SELECT * FROM products", function(err, res) {
         if (err) throw err;
-        for (var i = 0; i < res.length; i++) {
-            console.log(" || " + (i + 1) + " || " + res[i].product_name + " || Dept: " + res[i].department_name + " || Price: $" + res[i].price + " || QTY: " + res[i].stock_quantity);
-            console.log("------------------------------------------------------------------------------------------------------------------------");
-            console.log("------------------------------------------------------------------------------------------------------------------------");
-        }
+        console.log(" ");
+            var prodArr = []
+            for (var i = 0; i < res.length; i++) {
+                var itemObj = {
+                    "item #": i + 1,
+                    "Name": res[i].product_name,
+                    "Department": res[i].department_name,
+                    "price ($)": res[i].price,
+                    "Current Stock":res[i].stock_quantity 
+                };
+                prodArr.push(itemObj);
+            }
+            console.table(prodArr)
+
         function pickItem () {
                 inquirer
         .prompt([{

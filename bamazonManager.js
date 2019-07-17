@@ -6,6 +6,8 @@ var keys = require("./keys.js");
 
 var inquirer = require("inquirer");
 
+const cTable = require('console.table')
+
 function Password (password) {
     this.password = password;
 }
@@ -60,7 +62,7 @@ function start() {
             name: "prompt",
             type: "list",
             message: "What would you like to do?",
-            choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "EXIT"]
+            choices: ["View Products for Sale", "View Low Inventory", "Change Inventory", "Add New Product", "EXIT"]
         }).then(function(choice) {
             switch(choice.prompt) {
                 case "View Products for Sale":
@@ -69,7 +71,7 @@ function start() {
                 case "View Low Inventory":
                     viewLowInv()
                     break;
-                case "Add to Inventory":
+                case "Change Inventory":
                     addInv();
                     break;
                 case "Add New Product":
@@ -87,13 +89,18 @@ function start() {
         connection.query("SELECT * FROM products", function(err, res) {
             if (err) throw err;
             console.log(" ");
+            var prodArr = []
             for (var i = 0; i < res.length; i++) {
-                console.log(" || " + (i + 1) + " || " + res[i].product_name + " || Dept: " + res[i].department_name + " || Price: $" + res[i].price + " || QTY: " + res[i].stock_quantity);
-                console.log("------------------------------------------------------------------------------------------------------------------------");
-                console.log("------------------------------------------------------------------------------------------------------------------------");
-            
-
+                var itemObj = {
+                    "item #": i + 1,
+                    "Name": res[i].product_name,
+                    "Department": res[i].department_name,
+                    "price ($)": res[i].price,
+                    "Current Stock":res[i].stock_quantity 
+                };
+                prodArr.push(itemObj);
             }
+            console.table(prodArr)
             userPrompt ()
         });
     }
@@ -101,16 +108,23 @@ function start() {
         connection.query("SELECT * FROM products", function(err, res) {
             if (err) throw err;
             console.log(" ");
+            var prodArr = []
             for (var i = 0; i < res.length; i++) {
                 if (res[i].stock_quantity <= 50) {
-                console.log(" || " + (i + 1) + " || " + res[i].product_name + " || Dept: " + res[i].department_name + " || Price: $" + res[i].price + " || QTY: " + res[i].stock_quantity);
-                console.log("------------------------------------------------------------------------------------------------------------------------");
-                console.log("------------------------------------------------------------------------------------------------------------------------");
-                }
+                    var itemObj = {
+                        "item #": i + 1,
+                        "Name": res[i].product_name,
+                        "Department": res[i].department_name,
+                        "price ($)": res[i].price,
+                        "Current Stock":res[i].stock_quantity 
+                    }
+                    prodArr.push(itemObj);
+                };
             }
+            console.table(prodArr)
             userPrompt ()
         });
-    };
+    }
 
     function addInv() {
         connection.query("SELECT * FROM products", function(err, res) {
@@ -120,18 +134,17 @@ function start() {
             .prompt([{
                 name: "whichItem",
                 type: "input",
-                message: "Please enter the product item number that you'd like to add inventory to."
+                message: "Please enter the product item number that you'd like to change the inventory for."
             }, {
                 name:"howMany",
                 type: "input",
-                message: "Please enter the quantity that you would like to add."
+                message: "Please enter the quantity that you would like to add/subtract. (to subtract include a ' - ' before the number"
                 }
             ])
             .then(function(answer) {
                 var item = answer.whichItem - 1;
                 var invItem = item + 1;
-
-                if (!item || invItem > res.length || invItem <= 0) {
+                if (isNaN(item) || invItem > res.length || invItem <= 0) {
                     console.log("\nINVALID INPUT\nPlease be sure that you've entered the number that matches your item selection.\n")
                     addInv(); 
 
@@ -170,7 +183,7 @@ function start() {
                         addInv();
                     }
                 } else {
-                    console.log("\nINVAID INPUT.\nPlease be sure that you've entered a number for quantity.\n")
+                    console.log("\nINVALID INPUT.\nPlease be sure that you've entered a number for quantity.\n")
                     userPrompt(); 
                 } 
                 function updateProduct(newQty, invItem) {
@@ -249,7 +262,8 @@ function start() {
                                     function(err) {
                                         if (err) throw err;
                                     }
-                                )
+                                );
+                                userPrompt();
 
                                 // INSERT INTO products (product_name, department_name, price, stock_quantity)
                                 // VALUES ("Bamazon Parrot Feather – Bring LIRI to your own speaker- Black", "Smart Home", 34.99, 1000);
