@@ -121,9 +121,9 @@ Following that, you will be asked to confirm, YES updates the list of items and 
 
 EXIT will terminate the application
 
-## Manager
+## Supervisor
 
-When the Manager side is initiated, the terminal will give you a prompt, asking what you'd like to do
+When the Supervisor side is initiated, the terminal will give you a prompt, asking what you'd like to do
 
 ```
 ? What would you like to do? (Use arrow keys)
