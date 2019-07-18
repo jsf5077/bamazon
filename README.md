@@ -145,6 +145,22 @@ You will be asked to confirm the transaction. YES will add the department into t
 
 EXIT terminates the application.
 
+## DEMONSTRATION
+
+Customer Side Demo
+
+https://embed.vidyard.com/share/fNvLJe3F8JWMxxJAAAC73M?
+
+
+Manager Side Demo
+
+https://embed.vidyard.com/share/SzCrcbKsbihqxdfRVRCWBG?
+
+
+Supervisor Side Demo
+
+https://embed.vidyard.com/share/X5UhQNbb7b6VtJ3F8pGR83?
+
 
 ## Built With
 
