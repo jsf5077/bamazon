@@ -91,10 +91,13 @@ GROUP BY department_id, departments.department_name;
 
 --     Bamazon Spindle, Works with LIRI
     
-SELECT * FROM products;
--- SELECT * FROM departments;
+-- SELECT * FROM products;
+SELECT * FROM departments;
 
+SELECT department_id, departments.department_name, over_head_costs AS Over_Head_Costs , SUM(product_sales) AS Product_Sales
+FROM departments
+LEFT JOIN products ON departments.department_name = products.department_name
+GROUP BY department_id, department_name;
 
-
-ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Runner6998!';
+-- ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'enter password here';
 	

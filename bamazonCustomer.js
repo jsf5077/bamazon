@@ -176,7 +176,7 @@ function start() {
                                 break;
 
                                 case "NO":
-                                    console.log("\npurchased cancelled\n");
+                                    console.log("\nPurchase cancelled.\n");
                                     userPrompt();
 
                                 break;
