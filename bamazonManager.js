@@ -138,7 +138,7 @@ function start() {
             }, {
                 name:"howMany",
                 type: "input",
-                message: "Please enter the quantity that you would like to add/subtract. (to subtract include a ' - ' before the number"
+                message: "Please enter the quantity that you would like to add/(include ' - ' ) subtract."
                 }
             ])
             .then(function(answer) {
